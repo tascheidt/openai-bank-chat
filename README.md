@@ -74,10 +74,22 @@ The assets are exposed at [`http://localhost:4444`](http://localhost:4444) with 
 
 The repository ships several demo MCP servers that highlight different widget bundles:
 
+- **QuickBank (Python)** – banking demo with balance checking, transactions, and e-transfers
 - **Pizzaz (Node & Python)** – pizza-inspired collection of tools and components
 - **Solar system (Python)** – 3D solar system viewer
 
 Every tool response includes plain text content, structured JSON, and `_meta.openai/outputTemplate` metadata so the Apps SDK can hydrate the matching widget.
+
+### QuickBank Python server
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r quickbank_server_python/requirements.txt
+uvicorn quickbank_server_python.main:app --port 8000
+```
+
+See `QUICKBANK_SETUP.md` for complete setup guide.
 
 ### Pizzaz Node server
 

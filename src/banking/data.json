@@ -1,0 +1,125 @@
+{
+  "accounts": [
+    {
+      "id": "checking",
+      "name": "Checking Account",
+      "accountNumber": "****4521",
+      "balance": 3245.67,
+      "currency": "CAD",
+      "trend": "+2.3%"
+    },
+    {
+      "id": "savings",
+      "name": "Savings Account",
+      "accountNumber": "****8892",
+      "balance": 12890.32,
+      "currency": "CAD",
+      "trend": "+5.1%"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "t1",
+      "date": "2025-10-06",
+      "description": "Coffee Shop",
+      "amount": -5.67,
+      "category": "Food & Dining",
+      "merchant": "Bean There Cafe",
+      "type": "debit"
+    },
+    {
+      "id": "t2",
+      "date": "2025-10-06",
+      "description": "Salary Deposit",
+      "amount": 2450.00,
+      "category": "Income",
+      "merchant": "ACME Corp",
+      "type": "credit"
+    },
+    {
+      "id": "t3",
+      "date": "2025-10-05",
+      "description": "Grocery Store",
+      "amount": -87.42,
+      "category": "Groceries",
+      "merchant": "FreshMart",
+      "type": "debit"
+    },
+    {
+      "id": "t4",
+      "date": "2025-10-05",
+      "description": "Gas Station",
+      "amount": -52.30,
+      "category": "Transportation",
+      "merchant": "Shell",
+      "type": "debit"
+    },
+    {
+      "id": "t5",
+      "date": "2025-10-04",
+      "description": "Online Shopping",
+      "amount": -129.99,
+      "category": "Shopping",
+      "merchant": "Amazon",
+      "type": "debit"
+    },
+    {
+      "id": "t6",
+      "date": "2025-10-03",
+      "description": "Restaurant",
+      "amount": -67.85,
+      "category": "Food & Dining",
+      "merchant": "The Italian Place",
+      "type": "debit"
+    },
+    {
+      "id": "t7",
+      "date": "2025-10-02",
+      "description": "Interac e-Transfer",
+      "amount": -100.00,
+      "category": "Transfer",
+      "merchant": "To: Sarah Chen",
+      "type": "etransfer"
+    },
+    {
+      "id": "t8",
+      "date": "2025-10-01",
+      "description": "Rent Payment",
+      "amount": -1850.00,
+      "category": "Housing",
+      "merchant": "Property Management",
+      "type": "debit"
+    }
+  ],
+  "contacts": [
+    {
+      "id": "c1",
+      "name": "Sarah Chen",
+      "email": "sarah.chen@email.com",
+      "avatar": "SC",
+      "recent": true
+    },
+    {
+      "id": "c2",
+      "name": "Michael Torres",
+      "email": "m.torres@email.com",
+      "avatar": "MT",
+      "recent": true
+    },
+    {
+      "id": "c3",
+      "name": "Emma Wilson",
+      "email": "emma.w@email.com",
+      "avatar": "EW",
+      "recent": false
+    },
+    {
+      "id": "c4",
+      "name": "James Park",
+      "email": "jpark@email.com",
+      "avatar": "JP",
+      "recent": false
+    }
+  ]
+}
+
