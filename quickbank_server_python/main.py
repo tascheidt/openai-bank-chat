@@ -10,6 +10,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any, Dict, List
 from datetime import datetime, timedelta
+from pathlib import Path
 
 import mcp.types as types
 from mcp.server.fastmcp import FastMCP
@@ -153,51 +154,33 @@ class BankingWidget:
     response_text: str
 
 
-# Widget definitions - update these URLs after building
+# Widget definitions - URLs now point to locally served assets
 widgets: List[BankingWidget] = [
     BankingWidget(
-        identifier="check-balance",
+        identifier="check-balance-v6",
         title="Check Account Balance",
         template_uri="ui://widget/banking.html",
         invoking="Retrieving your account balance",
         invoked="Balance retrieved",
-        html=(
-            "<div id=\"banking-root\"></div>\n"
-            "<link rel=\"stylesheet\" href=\"https://persistent.oaistatic.com/"
-            "ecosystem-built-assets/banking-2d2b.css\">\n"
-            "<script type=\"module\" src=\"https://persistent.oaistatic.com/"
-            "ecosystem-built-assets/banking-2d2b.js\"></script>"
-        ),
+        html=open(Path(__file__).parent.parent / "assets" / "banking-2d2b.html").read(),
         response_text="Here's your current account balance overview.",
     ),
     BankingWidget(
-        identifier="view-transactions",
+        identifier="view-transactions-v6",
         title="View Recent Transactions",
         template_uri="ui://widget/banking-transactions.html",
         invoking="Loading your recent transactions",
         invoked="Transactions loaded",
-        html=(
-            "<div id=\"banking-transactions-root\"></div>\n"
-            "<link rel=\"stylesheet\" href=\"https://persistent.oaistatic.com/"
-            "ecosystem-built-assets/banking-transactions-2d2b.css\">\n"
-            "<script type=\"module\" src=\"https://persistent.oaistatic.com/"
-            "ecosystem-built-assets/banking-transactions-2d2b.js\"></script>"
-        ),
+        html=open(Path(__file__).parent.parent / "assets" / "banking-transactions-2d2b.html").read(),
         response_text="Here are your recent transactions.",
     ),
     BankingWidget(
-        identifier="send-etransfer",
+        identifier="send-etransfer-v6",
         title="Send Interac e-Transfer",
         template_uri="ui://widget/banking-transfer.html",
         invoking="Preparing transfer form",
         invoked="Transfer form ready",
-        html=(
-            "<div id=\"banking-transfer-root\"></div>\n"
-            "<link rel=\"stylesheet\" href=\"https://persistent.oaistatic.com/"
-            "ecosystem-built-assets/banking-transfer-2d2b.css\">\n"
-            "<script type=\"module\" src=\"https://persistent.oaistatic.com/"
-            "ecosystem-built-assets/banking-transfer-2d2b.js\"></script>"
-        ),
+        html=open(Path(__file__).parent.parent / "assets" / "banking-transfer-2d2b.html").read(),
         response_text="You can now send an Interac e-Transfer.",
     ),
 ]
@@ -292,7 +275,7 @@ def _embedded_widget_resource(widget: BankingWidget) -> types.EmbeddedResource:
 async def _list_tools() -> List[types.Tool]:
     return [
         types.Tool(
-            name="check-balance",
+            name="check-balance-v6",
             title="Check Account Balance",
             description="Check your account balance and view account overview",
             inputSchema={
@@ -305,10 +288,10 @@ async def _list_tools() -> List[types.Tool]:
                 },
                 "additionalProperties": False,
             },
-            _meta=_tool_meta(WIDGETS_BY_ID["check-balance"]),
+            _meta=_tool_meta(WIDGETS_BY_ID["check-balance-v6"]),
         ),
         types.Tool(
-            name="view-transactions",
+            name="view-transactions-v6",
             title="View Recent Transactions",
             description="View your recent transaction history",
             inputSchema={
@@ -326,10 +309,10 @@ async def _list_tools() -> List[types.Tool]:
                 },
                 "additionalProperties": False,
             },
-            _meta=_tool_meta(WIDGETS_BY_ID["view-transactions"]),
+            _meta=_tool_meta(WIDGETS_BY_ID["view-transactions-v6"]),
         ),
         types.Tool(
-            name="send-etransfer",
+            name="send-etransfer-v6",
             title="Send Interac e-Transfer",
             description="Send money to someone via Interac e-Transfer",
             inputSchema={
@@ -350,7 +333,7 @@ async def _list_tools() -> List[types.Tool]:
                 },
                 "additionalProperties": False,
             },
-            _meta=_tool_meta(WIDGETS_BY_ID["send-etransfer"]),
+            _meta=_tool_meta(WIDGETS_BY_ID["send-etransfer-v6"]),
         ),
     ]
 
@@ -412,8 +395,8 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
     arguments = req.params.arguments or {}
 
     # Handle check-balance
-    if tool_name == "check-balance":
-        widget = WIDGETS_BY_ID["check-balance"]
+    if tool_name == "check-balance-v6":
+        widget = WIDGETS_BY_ID["check-balance-v6"]
         total_balance = sum(acc["balance"] for acc in MOCK_ACCOUNTS)
         
         structured_content = {
@@ -452,8 +435,8 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
         )
 
     # Handle view-transactions
-    elif tool_name == "view-transactions":
-        widget = WIDGETS_BY_ID["view-transactions"]
+    elif tool_name == "view-transactions-v6":
+        widget = WIDGETS_BY_ID["view-transactions-v6"]
         limit = arguments.get("limit", 10)
         transactions = MOCK_TRANSACTIONS[:limit]
         
@@ -493,8 +476,8 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
         )
 
     # Handle send-etransfer
-    elif tool_name == "send-etransfer":
-        widget = WIDGETS_BY_ID["send-etransfer"]
+    elif tool_name == "send-etransfer-v6":
+        widget = WIDGETS_BY_ID["send-etransfer-v6"]
         
         structured_content = {
             "contacts": MOCK_CONTACTS,

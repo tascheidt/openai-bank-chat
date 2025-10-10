@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    #test-root {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+    }
+    h1 {
+      margin: 0 0 20px 0;
+      font-size: 32px;
+    }
+    .info {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="test-root">
+    <h1>✅ Widget is Loading!</h1>
+    <p>If you see this, the widget infrastructure is working.</p>
+    <div class="info">
+      <p><strong>Test Data:</strong></p>
+      <p>Checking: $3,245.67</p>
+      <p>Savings: $12,890.32</p>
+      <p><strong>Total: $16,135.99 CAD</strong></p>
+    </div>
+  </div>
+  <script>
+    console.log("✅ Test widget loaded!");
+    
+    // Wait for window.openai to be available
+    function waitForOpenAI() {
+      return new Promise((resolve) => {
+        if (window.openai) {
+          resolve();
+        } else {
+          const checkInterval = setInterval(() => {
+            if (window.openai) {
+              clearInterval(checkInterval);
+              resolve();
+            }
+          }, 100);
+        }
+      });
+    }
+    
+    waitForOpenAI().then(() => {
+      console.log("✅ window.openai available!");
+      console.log("  - theme:", window.openai?.theme);
+      console.log("  - displayMode:", window.openai?.displayMode);
+      console.log("  - toolOutput:", window.openai?.toolOutput);
+      
+      // Update UI with actual data if available
+      const data = window.openai?.toolOutput;
+      if (data && data.accounts) {
+        console.log("✅ Got account data:", data);
+      }
+    }).catch(err => {
+      console.error("❌ Error waiting for openai:", err);
+    });
+    
+    // Log when globals are available
+    window.addEventListener('openai:set_globals', (event) => {
+      console.log("✅ openai:set_globals event:", event.detail);
+    });
+    
+    window.addEventListener('webplus:set_globals', (event) => {
+      console.log("✅ webplus:set_globals event:", event.detail);
+    });
+  </script>
+</body>
+</html>
+

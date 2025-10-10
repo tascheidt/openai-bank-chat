@@ -83,7 +83,7 @@ Copy the forwarding URL (e.g., `https://browny-multistriate-milagro.ngrok-free.d
 2. Go to **Settings > Connectors**
 3. Add a new connector with your ngrok URL + `/mcp`:
    ```
-   https://abc123.ngrok-free.app/mcp
+   browny-multistriate-milagro.ngrok-free.dev/mcp
    ```
 4. Save and activate the connector
 

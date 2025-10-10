@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    #test-root {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px;
+      min-height: 300px;
+      border-radius: 12px;
+    }
+    h1 {
+      margin: 0 0 20px 0;
+      font-size: 32px;
+    }
+    .status {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    .status-item {
+      margin: 8px 0;
+      font-size: 16px;
+    }
+    .success { color: #4ade80; }
+    .error { color: #f87171; }
+  </style>
+</head>
+<body>
+  <div id="test-root">
+    <h1>✅ Banking Widget Test</h1>
+    <p>Testing widget infrastructure...</p>
+    <div class="status" id="status">
+      <div class="status-item">Initializing...</div>
+    </div>
+  </div>
+  <script>
+    const statusDiv = document.getElementById('status');
+    
+    function addStatus(message, isSuccess = true) {
+      const div = document.createElement('div');
+      div.className = 'status-item ' + (isSuccess ? 'success' : 'error');
+      div.textContent = message;
+      statusDiv.appendChild(div);
+    }
+    
+    addStatus('✅ Widget loaded');
+    
+    // Check for window.openai
+    if (window.openai) {
+      addStatus('✅ window.openai exists');
+      
+      // Safely access properties without logging the whole object
+      setTimeout(() => {
+        try {
+          const theme = window.openai.theme;
+          const displayMode = window.openai.displayMode;
+          const toolOutput = window.openai.toolOutput;
+          
+          addStatus('Theme: ' + (theme || 'not set'));
+          addStatus('Display Mode: ' + (displayMode || 'not set'));
+          
+          if (toolOutput) {
+            addStatus('✅ toolOutput received!');
+            if (toolOutput.accounts) {
+              addStatus('✅ Accounts: ' + toolOutput.accounts.length);
+              addStatus('Total: $' + (toolOutput.totalBalance || 0));
+            }
+          } else {
+            addStatus('⚠️ No toolOutput data', false);
+          }
+        } catch (err) {
+          addStatus('❌ Error: ' + err.message, false);
+        }
+      }, 500);
+    } else {
+      addStatus('❌ window.openai not found', false);
+    }
+    
+    // Check for window.webplus
+    if (window.webplus) {
+      addStatus('✅ window.webplus exists');
+    } else {
+      addStatus('⚠️ window.webplus not found', false);
+    }
+    
+    // Listen for data updates
+    window.addEventListener('openai:set_globals', (event) => {
+      addStatus('📡 Received openai:set_globals event');
+    });
+    
+    window.addEventListener('webplus:set_globals', (event) => {
+      addStatus('📡 Received webplus:set_globals event');
+    });
+  </script>
+</body>
+</html>
+
