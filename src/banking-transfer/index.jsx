@@ -37,6 +37,9 @@ function TransferForm() {
   };
 
   const handleSubmit = () => {
+    if (!amount || !selectedContact || !fromAccount) {
+      return;
+    }
     setStep("confirm");
   };
 
@@ -45,41 +48,130 @@ function TransferForm() {
     setStep("success");
   };
 
+  const handleBackToForm = () => {
+    setStep("form");
+  };
+
   if (step === "success") {
     return (
       <div
         style={{ maxHeight: maxHeight || "auto" }}
         className={
-          "w-full antialiased bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center " +
+          "w-full antialiased bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-900 dark:to-gray-800 " +
           (displayMode === "fullscreen"
-            ? "rounded-none p-8 min-h-[400px]"
-            : "border border-black/10 dark:border-white/10 rounded-2xl sm:rounded-3xl p-6 min-h-[400px]")
+            ? "rounded-none p-8"
+            : "border border-black/10 dark:border-white/10 rounded-2xl sm:rounded-3xl p-6")
         }
       >
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-600 rounded-full mb-4">
-            <CheckCircle2 className="w-8 h-8 text-white" />
+        <div className="max-w-lg mx-auto">
+          {/* Success Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full mb-6">
+              <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+              Transfer Successful!
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              Your money has been sent securely
+            </p>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Transfer Sent!
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-1">
-            {formatCurrency(amount)} sent to {selectedContact?.name}
-          </p>
-          <p className="text-sm text-gray-500 dark:text-gray-500">
-            via Interac e-Transfer
-          </p>
-          <button
-            onClick={() => {
-              setStep("form");
-              setAmount("");
-              setMessage("");
-              setSelectedContact(null);
-            }}
-            className="mt-6 bg-green-600 hover:bg-green-700 text-white rounded-xl py-3 px-6 font-medium transition-colors"
-          >
-            Send Another
-          </button>
+
+          {/* Transfer Summary Card */}
+          <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden mb-6">
+            {/* Amount Section */}
+            <div className="bg-gradient-to-r from-green-600 to-green-700 px-6 py-8 text-center">
+              <p className="text-green-100 text-sm font-medium mb-2">Amount Transferred</p>
+              <p className="text-4xl font-bold text-white">
+                {formatCurrency(amount)}
+              </p>
+            </div>
+            
+            {/* Details Section */}
+            <div className="p-6 space-y-6">
+              {/* Recipient */}
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                  {selectedContact?.avatar}
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Sent to</p>
+                  <p className="font-semibold text-gray-900 dark:text-white text-lg">
+                    {selectedContact?.name}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {selectedContact?.email}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="border-t border-gray-100 dark:border-gray-700 pt-4 space-y-4">
+                {/* Transfer Details */}
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500 dark:text-gray-400">Transfer method</span>
+                  <span className="font-medium text-gray-900 dark:text-white">Interac e-Transfer</span>
+                </div>
+                
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500 dark:text-gray-400">Status</span>
+                  <span className="inline-flex items-center gap-1 text-green-600 dark:text-green-400 font-medium">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Completed
+                  </span>
+                </div>
+                
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500 dark:text-gray-400">Time</span>
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    {new Date().toLocaleTimeString('en-US', { 
+                      hour: 'numeric', 
+                      minute: '2-digit',
+                      hour12: true 
+                    })}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Next Steps */}
+          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 mb-6 border border-blue-100 dark:border-blue-800">
+            <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              What happens next?
+            </h3>
+            <div className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
+              <p>• {selectedContact?.name} will receive an email notification</p>
+              <p>• They can deposit the funds using their online banking</p>
+              <p>• You'll receive a confirmation email shortly</p>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-4">
+            <button
+              onClick={() => {
+                setStep("form");
+                setAmount("");
+                setMessage("");
+                setSelectedContact(null);
+              }}
+              className="flex-1 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 rounded-2xl py-4 px-6 font-semibold transition-all duration-200 hover:shadow-md"
+            >
+              Send Another
+            </button>
+            <button
+              onClick={() => {
+                // In a real app, this would navigate to transaction history
+                console.log("View transaction history");
+              }}
+              className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-2xl py-4 px-6 font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-green-500/25"
+            >
+              View History
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -92,72 +184,134 @@ function TransferForm() {
       <div
         style={{ maxHeight: maxHeight || "auto" }}
         className={
-          "w-full antialiased bg-gradient-to-br from-amber-50 to-orange-50 dark:from-gray-900 dark:to-gray-800 " +
+          "w-full antialiased bg-gradient-to-br from-slate-50 to-gray-50 dark:from-gray-900 dark:to-gray-800 " +
           (displayMode === "fullscreen"
             ? "rounded-none p-8"
             : "border border-black/10 dark:border-white/10 rounded-2xl sm:rounded-3xl p-6")
         }
       >
-        <div className="max-w-md mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-            Confirm Transfer
-          </h2>
-          
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 space-y-4 mb-6">
-            <div className="flex justify-between items-start">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Amount</span>
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                {formatCurrency(amount)}
-              </span>
+        <div className="max-w-lg mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-4">
+              <Send className="w-8 h-8 text-blue-600 dark:text-blue-400" />
             </div>
-            
-            <div className="flex justify-between items-start pt-4 border-t border-gray-200 dark:border-gray-700">
-              <span className="text-sm text-gray-500 dark:text-gray-400">To</span>
-              <div className="text-right">
-                <p className="font-semibold text-gray-900 dark:text-white">
-                  {selectedContact?.name}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {selectedContact?.email}
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex justify-between items-start pt-4 border-t border-gray-200 dark:border-gray-700">
-              <span className="text-sm text-gray-500 dark:text-gray-400">From</span>
-              <div className="text-right">
-                <p className="font-semibold text-gray-900 dark:text-white">
-                  {selectedAcc?.name}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {selectedAcc?.accountNumber}
-                </p>
-              </div>
-            </div>
-            
-            {message && (
-              <div className="flex justify-between items-start pt-4 border-t border-gray-200 dark:border-gray-700">
-                <span className="text-sm text-gray-500 dark:text-gray-400">Message</span>
-                <p className="text-right text-sm text-gray-900 dark:text-white max-w-[200px]">
-                  {message}
-                </p>
-              </div>
-            )}
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              Review Your Transfer
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              Please review the details below before confirming
+            </p>
           </div>
           
-          <div className="flex gap-3">
+          {/* Transfer Details Card */}
+          <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden mb-6">
+            {/* Amount Section */}
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-8 text-center">
+              <p className="text-blue-100 text-sm font-medium mb-2">Transfer Amount</p>
+              <p className="text-4xl font-bold text-white">
+                {formatCurrency(amount)}
+              </p>
+            </div>
+            
+            {/* Details Section */}
+            <div className="p-6 space-y-6">
+              {/* Recipient */}
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                  {selectedContact?.avatar}
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Sending to</p>
+                  <p className="font-semibold text-gray-900 dark:text-white text-lg">
+                    {selectedContact?.name}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {selectedContact?.email}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
+                {/* From Account */}
+                <div className="flex items-center justify-between py-3">
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">From account</p>
+                    <p className="font-semibold text-gray-900 dark:text-white">
+                      {selectedAcc?.name}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Account</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {selectedAcc?.accountNumber}
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Message */}
+                {message && (
+                  <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Message</p>
+                    <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-3">
+                      <p className="text-gray-900 dark:text-white text-sm">
+                        "{message}"
+                      </p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Transfer Type */}
+                <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Transfer method</p>
+                      <p className="font-medium text-gray-900 dark:text-white">Interac e-Transfer</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Delivery</p>
+                      <p className="font-medium text-green-600 dark:text-green-400">Instant</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="flex gap-4">
             <button
-              onClick={() => setStep("form")}
-              className="flex-1 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 rounded-xl py-3 px-4 font-medium transition-colors"
+              onClick={handleBackToForm}
+              className="flex-1 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 rounded-2xl py-4 px-6 font-semibold transition-all duration-200 hover:shadow-md"
             >
-              Back
+              ← Edit Details
             </button>
             <button
               onClick={handleConfirm}
-              className="flex-1 bg-orange-600 hover:bg-orange-700 text-white rounded-xl py-3 px-4 font-medium transition-colors"
+              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl py-4 px-6 font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/25 flex items-center justify-center gap-2"
             >
-              Confirm & Send
+              <Send className="w-5 h-5" />
+              Send Transfer
             </button>
+          </div>
+          
+          {/* Security Notice */}
+          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center mt-0.5">
+                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">
+                  Secure Transfer
+                </p>
+                <p className="text-xs text-blue-700 dark:text-blue-300">
+                  Your transfer is protected by bank-level security. The recipient will receive an email with instructions to deposit the funds.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -280,11 +434,20 @@ function TransferForm() {
         <button
           onClick={handleSubmit}
           disabled={!amount || !selectedContact}
-          className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl py-4 font-semibold transition-colors flex items-center justify-center gap-2"
+          className="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed text-white rounded-2xl py-4 font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/25 flex items-center justify-center gap-2"
         >
           <Send className="w-5 h-5" />
           Review Transfer
         </button>
+        
+        {/* Form Validation Messages */}
+        {(!amount || !selectedContact) && (
+          <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
+            <p className="text-sm text-amber-800 dark:text-amber-200">
+              Please enter an amount and select a recipient to continue
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

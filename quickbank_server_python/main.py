@@ -257,7 +257,6 @@ mcp = FastMCP(
     name="quickbank-python",
     sse_path="/mcp",
     message_path="/mcp/messages",
-    stateless_http=True,
 )
 
 
@@ -268,6 +267,7 @@ def _tool_meta(widget: BankingWidget) -> Dict[str, Any]:
         "openai/toolInvocation/invoked": widget.invoked,
         "openai/widgetAccessible": True,
         "openai/resultCanProduceWidget": True,
+        "openai/isConsequential": False,  # Reduces permission confirmations
         "annotations": {
             "destructiveHint": False,
             "openWorldHint": False,
@@ -435,6 +435,7 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
             "openai/toolInvocation/invoked": widget.invoked,
             "openai/widgetAccessible": True,
             "openai/resultCanProduceWidget": True,
+            "openai/isConsequential": False,  # Reduces permission confirmations
         }
         
         return types.ServerResult(
@@ -475,6 +476,7 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
             "openai/toolInvocation/invoked": widget.invoked,
             "openai/widgetAccessible": True,
             "openai/resultCanProduceWidget": True,
+            "openai/isConsequential": False,  # Reduces permission confirmations
         }
         
         return types.ServerResult(
@@ -519,6 +521,7 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
             "openai/toolInvocation/invoked": widget.invoked,
             "openai/widgetAccessible": True,
             "openai/resultCanProduceWidget": True,
+            "openai/isConsequential": False,  # Reduces permission confirmations
         }
         
         return types.ServerResult(
@@ -552,7 +555,7 @@ mcp._mcp_server.request_handlers[types.CallToolRequest] = _call_tool_request
 mcp._mcp_server.request_handlers[types.ReadResourceRequest] = _handle_read_resource
 
 
-app = mcp.streamable_http_app()
+app = mcp.sse_app()
 
 try:
     from starlette.middleware.cors import CORSMiddleware

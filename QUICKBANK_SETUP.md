@@ -75,7 +75,7 @@ In a new terminal:
 ngrok http 8000
 ```
 
-Copy the forwarding URL (e.g., `https://abc123.ngrok-free.app`)
+Copy the forwarding URL (e.g., `https://browny-multistriate-milagro.ngrok-free.dev`)
 
 ### Step 5: Add to ChatGPT
 
