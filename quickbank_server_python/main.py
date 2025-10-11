@@ -157,7 +157,7 @@ class BankingWidget:
 # Widget definitions - URLs now point to locally served assets
 widgets: List[BankingWidget] = [
     BankingWidget(
-        identifier="check-balance-v6",
+        identifier="check-balance-v7",
         title="Check Account Balance",
         template_uri="ui://widget/banking.html",
         invoking="Retrieving your account balance",
@@ -166,7 +166,7 @@ widgets: List[BankingWidget] = [
         response_text="Here's your current account balance overview.",
     ),
     BankingWidget(
-        identifier="view-transactions-v6",
+        identifier="view-transactions-v7",
         title="View Recent Transactions",
         template_uri="ui://widget/banking-transactions.html",
         invoking="Loading your recent transactions",
@@ -175,7 +175,7 @@ widgets: List[BankingWidget] = [
         response_text="Here are your recent transactions.",
     ),
     BankingWidget(
-        identifier="send-etransfer-v6",
+        identifier="send-etransfer-v7",
         title="Send Interac e-Transfer",
         template_uri="ui://widget/banking-transfer.html",
         invoking="Preparing transfer form",
@@ -275,7 +275,7 @@ def _embedded_widget_resource(widget: BankingWidget) -> types.EmbeddedResource:
 async def _list_tools() -> List[types.Tool]:
     return [
         types.Tool(
-            name="check-balance-v6",
+            name="check-balance-v7",
             title="Check Account Balance",
             description="Check your account balance and view account overview",
             inputSchema={
@@ -288,10 +288,10 @@ async def _list_tools() -> List[types.Tool]:
                 },
                 "additionalProperties": False,
             },
-            _meta=_tool_meta(WIDGETS_BY_ID["check-balance-v6"]),
+            _meta=_tool_meta(WIDGETS_BY_ID["check-balance-v7"]),
         ),
         types.Tool(
-            name="view-transactions-v6",
+            name="view-transactions-v7",
             title="View Recent Transactions",
             description="View your recent transaction history",
             inputSchema={
@@ -309,7 +309,7 @@ async def _list_tools() -> List[types.Tool]:
                 },
                 "additionalProperties": False,
             },
-            _meta=_tool_meta(WIDGETS_BY_ID["view-transactions-v6"]),
+            _meta=_tool_meta(WIDGETS_BY_ID["view-transactions-v7"]),
         ),
         types.Tool(
             name="send-etransfer-v6",
@@ -333,7 +333,7 @@ async def _list_tools() -> List[types.Tool]:
                 },
                 "additionalProperties": False,
             },
-            _meta=_tool_meta(WIDGETS_BY_ID["send-etransfer-v6"]),
+            _meta=_tool_meta(WIDGETS_BY_ID["send-etransfer-v7"]),
         ),
     ]
 
@@ -395,20 +395,14 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
     arguments = req.params.arguments or {}
 
     # Handle check-balance
-    if tool_name == "check-balance-v6":
-        widget = WIDGETS_BY_ID["check-balance-v6"]
+    if tool_name == "check-balance-v7":
+        widget = WIDGETS_BY_ID["check-balance-v7"]
         total_balance = sum(acc["balance"] for acc in MOCK_ACCOUNTS)
         
         structured_content = {
             "accounts": MOCK_ACCOUNTS,
             "totalBalance": total_balance
         }
-        
-        response_text = (
-            f"Your total balance across all accounts is ${total_balance:,.2f} CAD. "
-            f"Checking account: ${MOCK_ACCOUNTS[0]['balance']:,.2f}, "
-            f"Savings account: ${MOCK_ACCOUNTS[1]['balance']:,.2f}."
-        )
         
         widget_resource = _embedded_widget_resource(widget)
         meta: Dict[str, Any] = {
@@ -418,25 +412,20 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
             "openai/toolInvocation/invoked": widget.invoked,
             "openai/widgetAccessible": True,
             "openai/resultCanProduceWidget": True,
-            "openai/isConsequential": False,  # Reduces permission confirmations
+            "openai/isConsequential": False,
         }
         
         return types.ServerResult(
             types.CallToolResult(
-                content=[
-                    types.TextContent(
-                        type="text",
-                        text=response_text,
-                    )
-                ],
+                content=[],  # No text content - widget only
                 structuredContent=structured_content,
                 _meta=meta,
             )
         )
 
     # Handle view-transactions
-    elif tool_name == "view-transactions-v6":
-        widget = WIDGETS_BY_ID["view-transactions-v6"]
+    elif tool_name == "view-transactions-v7":
+        widget = WIDGETS_BY_ID["view-transactions-v7"]
         limit = arguments.get("limit", 10)
         transactions = MOCK_TRANSACTIONS[:limit]
         
@@ -445,12 +434,6 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
             "accountName": "All Accounts"
         }
         
-        response_text = (
-            f"Here are your {len(transactions)} most recent transactions. "
-            f"Your last transaction was {transactions[0]['merchant']} "
-            f"for ${abs(transactions[0]['amount']):.2f}."
-        )
-        
         widget_resource = _embedded_widget_resource(widget)
         meta: Dict[str, Any] = {
             "openai.com/widget": widget_resource.model_dump(mode="json"),
@@ -459,25 +442,20 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
             "openai/toolInvocation/invoked": widget.invoked,
             "openai/widgetAccessible": True,
             "openai/resultCanProduceWidget": True,
-            "openai/isConsequential": False,  # Reduces permission confirmations
+            "openai/isConsequential": False,
         }
         
         return types.ServerResult(
             types.CallToolResult(
-                content=[
-                    types.TextContent(
-                        type="text",
-                        text=response_text,
-                    )
-                ],
+                content=[],  # No text content - widget only
                 structuredContent=structured_content,
                 _meta=meta,
             )
         )
 
     # Handle send-etransfer
-    elif tool_name == "send-etransfer-v6":
-        widget = WIDGETS_BY_ID["send-etransfer-v6"]
+    elif tool_name == "send-etransfer-v7":
+        widget = WIDGETS_BY_ID["send-etransfer-v7"]
         
         structured_content = {
             "contacts": MOCK_CONTACTS,
@@ -494,8 +472,6 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
                     structured_content["preselectedContact"] = contact
                     break
         
-        response_text = "Ready to send an Interac e-Transfer. Please review and confirm the details."
-        
         widget_resource = _embedded_widget_resource(widget)
         meta: Dict[str, Any] = {
             "openai.com/widget": widget_resource.model_dump(mode="json"),
@@ -504,17 +480,12 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
             "openai/toolInvocation/invoked": widget.invoked,
             "openai/widgetAccessible": True,
             "openai/resultCanProduceWidget": True,
-            "openai/isConsequential": False,  # Reduces permission confirmations
+            "openai/isConsequential": False,
         }
         
         return types.ServerResult(
             types.CallToolResult(
-                content=[
-                    types.TextContent(
-                        type="text",
-                        text=response_text,
-                    )
-                ],
+                content=[],  # No text content - widget only
                 structuredContent=structured_content,
                 _meta=meta,
             )

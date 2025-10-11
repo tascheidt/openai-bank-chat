@@ -51,20 +51,25 @@ pip install -r quickbank_server_python/requirements.txt
 ```
 
 ### Step 3: Start the MCP Server
+# Kill all processes
+pkill -9 -f "uvicorn.*quickbank"
+pkill -9 -f ngrok
 
-```bash
-# From the repository root, with venv activated
+# Wait 5 seconds
+sleep 5
+
+# Start server
+cd /Users/tscheidt/chimera_gpt/openai-apps-sdk-examples
+source .venv/bin/activate
 uvicorn quickbank_server_python.main:app --port 8000 --reload
-```
-
-The server will start at `http://localhost:8000`
-
 You should see:
 ```
-INFO:     Started server process
+NFO:     Will watch for changes in these directories: ['/Users/tscheidt/chimera_gpt/openai-apps-sdk-examples']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [6599] using StatReload
+INFO:     Started server process [6601]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
 ```
 
 ### Step 4: Expose Locally with ngrok
