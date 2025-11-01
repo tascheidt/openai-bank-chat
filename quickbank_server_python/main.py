@@ -312,25 +312,12 @@ async def _list_tools() -> List[types.Tool]:
             _meta=_tool_meta(WIDGETS_BY_ID["view-transactions-v7"]),
         ),
         types.Tool(
-            name="send-etransfer-v6",
+            name="send-etransfer-v7",
             title="Send Interac e-Transfer",
-            description="Send money to someone via Interac e-Transfer",
+            description="Open the transfer form to send money via Interac e-Transfer. Shows an interactive form immediately.",
             inputSchema={
                 "type": "object",
-                "properties": {
-                    "recipientName": {
-                        "type": "string",
-                        "description": "Name of the recipient"
-                    },
-                    "recipientEmail": {
-                        "type": "string",
-                        "description": "Email address of the recipient"
-                    },
-                    "amount": {
-                        "type": "number",
-                        "description": "Amount to transfer in CAD"
-                    }
-                },
+                "properties": {},
                 "additionalProperties": False,
             },
             _meta=_tool_meta(WIDGETS_BY_ID["send-etransfer-v7"]),
@@ -393,6 +380,11 @@ async def _handle_read_resource(req: types.ReadResourceRequest) -> types.ServerR
 async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
     tool_name = req.params.name
     arguments = req.params.arguments or {}
+    
+    print(f"\n{'='*80}")
+    print(f"🔧 TOOL CALLED: {tool_name}")
+    print(f"📥 Arguments: {arguments}")
+    print(f"{'='*80}\n")
 
     # Handle check-balance
     if tool_name == "check-balance-v7":
@@ -403,6 +395,11 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
             "accounts": MOCK_ACCOUNTS,
             "totalBalance": total_balance
         }
+        
+        print(f"✅ Balance Widget - Sending data:")
+        print(f"   - Total Balance: ${total_balance:,.2f}")
+        print(f"   - Accounts: {len(MOCK_ACCOUNTS)} accounts")
+        print(f"   - Structured Content: {structured_content}\n")
         
         widget_resource = _embedded_widget_resource(widget)
         meta: Dict[str, Any] = {
@@ -434,6 +431,11 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
             "accountName": "All Accounts"
         }
         
+        print(f"✅ Transactions Widget - Sending data:")
+        print(f"   - Transactions: {len(transactions)} transactions")
+        print(f"   - First transaction: {transactions[0] if transactions else 'None'}")
+        print(f"   - Structured Content keys: {list(structured_content.keys())}\n")
+        
         widget_resource = _embedded_widget_resource(widget)
         meta: Dict[str, Any] = {
             "openai.com/widget": widget_resource.model_dump(mode="json"),
@@ -457,20 +459,21 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
     elif tool_name == "send-etransfer-v7":
         widget = WIDGETS_BY_ID["send-etransfer-v7"]
         
+        # Always show the form with all contacts and accounts
+        # Let the user select everything in the UI
         structured_content = {
             "contacts": MOCK_CONTACTS,
             "accounts": MOCK_ACCOUNTS,
             "preselectedContact": None,
-            "preselectedAmount": arguments.get("amount")
+            "preselectedAmount": None
         }
         
-        # Try to match recipient to a contact
-        recipient_email = arguments.get("recipientEmail")
-        if recipient_email:
-            for contact in MOCK_CONTACTS:
-                if contact["email"].lower() == recipient_email.lower():
-                    structured_content["preselectedContact"] = contact
-                    break
+        print(f"✅ Transfer Widget - Sending data:")
+        print(f"   - Contacts: {len(MOCK_CONTACTS)} contacts")
+        print(f"   - Contact names: {[c['name'] for c in MOCK_CONTACTS]}")
+        print(f"   - Accounts: {len(MOCK_ACCOUNTS)} accounts")
+        print(f"   - Account names: {[a['name'] for a in MOCK_ACCOUNTS]}")
+        print(f"   - Structured Content: {structured_content}\n")
         
         widget_resource = _embedded_widget_resource(widget)
         meta: Dict[str, Any] = {

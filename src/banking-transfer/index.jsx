@@ -31,6 +31,9 @@ function TransferForm() {
     preselectedAmount = null
   } = props || {};
 
+  // Debug logging
+  console.log("Transfer Form Props:", { contacts, accounts, props });
+
   const [selectedContact, setSelectedContact] = useState(preselectedContact);
   const [amount, setAmount] = useState(preselectedAmount || "");
   const [message, setMessage] = useState("");
@@ -422,6 +425,11 @@ function TransferForm() {
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
             Send to
           </label>
+          {contacts.length === 0 && (
+            <div className="text-sm text-red-600 mb-2">
+              ⚠️ No contacts available. Debug: {JSON.stringify(props)}
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-3">
             {contacts.map((contact, index) => (
               <button
